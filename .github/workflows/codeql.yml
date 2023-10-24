@@ -40,7 +40,7 @@ jobs:
         languages: ${{matrix.language}}
 
     - name: Build
-      run: mvn -B package pom.xml -DskipTests
+      run: mvn -B package -DskipTests
 
     - name: Perform CodeQL analysis
       uses: github/codeql-action/analyze@v2
