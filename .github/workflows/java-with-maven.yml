@@ -6,32 +6,48 @@ on:
   pull_request:
     branches: ["main"]
 
+permissions:
+  actions: read
+  checks: write
+  contents: read
+  id-token: write
+  security-events: write
+
+concurrency:
+  group: ${{github.head_ref || github.run_id}}
+  cancel-in-progress: true
+
 jobs:
   build:
     name: Build with maven
     runs-on: ubuntu-latest
-    permissions:
-      checks: write
-      contents: read
-      id-token: write
-
     steps:
     - name: Checkout
       uses: actions/checkout@v3
-
     - name: Set up JDK
       uses: actions/setup-java@v3
       with:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-
     - name: Build
-      run: mvn -B package -DskipTests
+      run: mvn -B process-test-classes -DskipTests
 
-    - name: Unit tests
+  test:
+    name: Run unit tests
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+    - name: Run unit tests
       run: mvn -B -Dmaven.test.failure.ignore=true test
-
     - name: Gather test results
       uses: dorny/test-reporter@v1
       if: always()
@@ -40,3 +56,30 @@ jobs:
         path: target/surefire-reports/*.xml
         reporter: java-junit
         fail-on-error: true
+
+  analyze:
+    name: Analyze with CodeQL
+    needs: build
+    runs-on: 'ubuntu-latest'
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v2
+      with:
+        languages: java-kotlin
+    - name: Build
+      run: mvn -B package -DskipTests
+    - name: Perform CodeQL analysis
+      uses: github/codeql-action/analyze@v2
+      with:
+        category: "/language:java-kotlin"
