@@ -33,6 +33,13 @@
       <version>1.18.30</version>
       <scope>provided</scope>
     </dependency>
+
+    <!-- added old dependency with issues to test renovate/bolt -->
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <version>1.1.0</version>
+    </dependency>
   </dependencies>
 
   <build>
