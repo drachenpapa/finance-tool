@@ -2,6 +2,7 @@ package de.drachenpapa.views;
 
 import de.drachenpapa.Messages;
 import de.drachenpapa.Settings;
+import lombok.Getter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,8 +12,8 @@ import java.util.ResourceBundle;
 
 public class MenuBar {
 
-    private final TableView parentFrame;
     private final Settings settings;
+    private final TableView parentFrame;
     private final ResourceBundle messages;
 
     public MenuBar(TableView parentFrame) {
