@@ -1,10 +1,7 @@
 package de.drachenpapa;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.util.Locale;
 import java.util.Properties;
 
 public class Settings {
@@ -21,11 +18,23 @@ public class Settings {
     }
 
     public void saveSettings(int x, int y, int width, int height) {
-        properties.setProperty("x", String.valueOf(x));
-        properties.setProperty("y", String.valueOf(y));
-        properties.setProperty("width", String.valueOf(width));
-        properties.setProperty("height", String.valueOf(height));
+        saveProperty("x", x);
+        saveProperty("y", y);
+        saveProperty("width", width);
+        saveProperty("height", height);
+        saveProperties();
+    }
 
+    public void saveLocale(Locale locale) {
+        properties.setProperty("locale", locale.toLanguageTag());
+        saveProperties();
+    }
+
+    private void saveProperty(String key, int value) {
+        properties.setProperty(key, String.valueOf(value));
+    }
+
+    private void saveProperties() {
         try (OutputStream output = new FileOutputStream(SETTINGS_FILE)) {
             properties.store(output, "FinanceTool Settings");
         } catch (IOException e) {
@@ -47,5 +56,9 @@ public class Settings {
 
     public int getHeight() {
         return Integer.parseInt(properties.getProperty("height", "300"));
+    }
+
+    public Locale getLocale() {
+        return Locale.forLanguageTag(properties.getProperty("locale", "en"));
     }
 }

@@ -11,7 +11,10 @@ public class FinanceTool {
 
     public static void main(String[] args) throws SQLException {
         Connection connection = DatabaseConnector.getConnection();
+        launchApp();
+    }
 
+    private static void launchApp() {
         SwingUtilities.invokeLater(() -> {
             TableView app = new TableView();
             app.setVisible(true);

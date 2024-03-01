@@ -5,12 +5,20 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseConnector {
-    public static Connection getConnection() throws SQLException {
-        String jdbcUrl = "jdbc:h2:./data/finances";
-        String username = "admin";
-        String password = "nimda";
+    private static final String JDBC_URL = "jdbc:h2:./data/finances";
+    private static final String USERNAME = "admin";
+    private static final String PASSWORD = "nimda";
 
-        Connection connection = DriverManager.getConnection(jdbcUrl, username, password);
-        return connection;
+    static {
+        try {
+            Class.forName("org.h2.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            throw new IllegalStateException("Failed to load database driver.");
+        }
+    }
+
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
     }
 }
