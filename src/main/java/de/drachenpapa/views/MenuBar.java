@@ -2,7 +2,6 @@ package de.drachenpapa.views;
 
 import de.drachenpapa.Messages;
 import de.drachenpapa.Settings;
-import lombok.Getter;
 
 import javax.swing.*;
 import java.awt.*;
