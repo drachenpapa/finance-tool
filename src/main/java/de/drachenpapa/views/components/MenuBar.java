@@ -2,9 +2,9 @@ package de.drachenpapa.views.components;
 
 import de.drachenpapa.Messages;
 import de.drachenpapa.Settings;
-import de.drachenpapa.views.dialogs.SettingsDialog;
 import de.drachenpapa.views.TableView;
 import de.drachenpapa.views.dialogs.AboutDialog;
+import de.drachenpapa.views.dialogs.SettingsDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,46 +33,40 @@ public class MenuBar {
 
     private JMenu createFileMenu() {
         JMenu fileMenu = new JMenu(messages.getString("file.menu"));
-        fileMenu.add(getSettingsMenu());
-        fileMenu.add(getExitMenu());
-
+        fileMenu.add(createMenuItem(messages.getString("file.settings"), this::showSettingsDialog));
+        fileMenu.add(createMenuItem(messages.getString("file.exit"), this::exitApplication));
         return fileMenu;
+    }
+
+    private JMenuItem createMenuItem(String label, Runnable action) {
+        JMenuItem menuItem = new JMenuItem(label);
+        menuItem.addActionListener(e -> action.run());
+        return menuItem;
+    }
+
+    private void showSettingsDialog() {
+        SettingsDialog settingsDialog = new SettingsDialog(parentFrame, settings.getLocale());
+        settingsDialog.setVisible(true);
+    }
+
+    private void exitApplication() {
+        saveWindowSettings();
+        System.exit(0);
+    }
+
+    private void saveWindowSettings() {
+        Rectangle bounds = parentFrame.getBounds();
+        settings.saveWindowSettings(bounds.x, bounds.y, bounds.width, bounds.height);
     }
 
     private JMenu createHelpMenu() {
         JMenu helpMenu = new JMenu(messages.getString("help.menu"));
-        helpMenu.add(getAboutMenu());
-
+        helpMenu.add(createMenuItem(messages.getString("help.about"), this::showAboutDialog));
         return helpMenu;
     }
 
-    private JMenuItem getSettingsMenu() {
-        JMenuItem settingsMenuItem = new JMenuItem(messages.getString("file.settings"));
-        settingsMenuItem.addActionListener(e -> {
-            SettingsDialog settingsDialog = new SettingsDialog(parentFrame, settings.getLocale());
-            settingsDialog.setVisible(true);
-        });
-        return settingsMenuItem;
-    }
-
-    private JMenuItem getExitMenu() {
-        JMenuItem exitMenuItem = new JMenuItem(messages.getString("file.exit"));
-        exitMenuItem.setMnemonic(KeyEvent.VK_Q);
-        exitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_DOWN_MASK));
-        exitMenuItem.addActionListener(e -> {
-            Rectangle bounds = parentFrame.getBounds();
-            settings.saveSettings(bounds.x, bounds.y, bounds.width, bounds.height);
-            System.exit(0);
-        });
-        return exitMenuItem;
-    }
-
-    private JMenuItem getAboutMenu() {
-        JMenuItem aboutMenuItem = new JMenuItem(messages.getString("help.about"));
-        aboutMenuItem.addActionListener(e -> {
-            AboutDialog aboutDialog = new AboutDialog(parentFrame, settings.getLocale());
-            aboutDialog.setVisible(true);
-        });
-        return aboutMenuItem;
+    private void showAboutDialog() {
+        AboutDialog aboutDialog = new AboutDialog(parentFrame, settings.getLocale());
+        aboutDialog.setVisible(true);
     }
 }

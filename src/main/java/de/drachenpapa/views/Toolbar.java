@@ -4,9 +4,6 @@ import de.drachenpapa.database.DatabaseConnector;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class Toolbar {

@@ -17,7 +17,7 @@ public class Settings {
         }
     }
 
-    public void saveSettings(int x, int y, int width, int height) {
+    public void saveWindowSettings(int x, int y, int width, int height) {
         saveProperty("x", x);
         saveProperty("y", y);
         saveProperty("width", width);
@@ -25,21 +25,10 @@ public class Settings {
         saveProperties();
     }
 
-    public void saveLocale(Locale locale) {
+    public void saveSettings(Locale locale, String currency) {
         properties.setProperty("locale", locale.toLanguageTag());
+        properties.setProperty("currency", currency);
         saveProperties();
-    }
-
-    private void saveProperty(String key, int value) {
-        properties.setProperty(key, String.valueOf(value));
-    }
-
-    private void saveProperties() {
-        try (OutputStream output = new FileOutputStream(SETTINGS_FILE)) {
-            properties.store(output, "FinanceTool Settings");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public int getX() {
@@ -60,5 +49,21 @@ public class Settings {
 
     public Locale getLocale() {
         return Locale.forLanguageTag(properties.getProperty("locale", "en"));
+    }
+
+    public String getSavedCurrency() {
+        return properties.getProperty("currency", "EUR");
+    }
+
+    private void saveProperty(String key, int value) {
+        properties.setProperty(key, String.valueOf(value));
+    }
+
+    private void saveProperties() {
+        try (OutputStream output = new FileOutputStream(SETTINGS_FILE)) {
+            properties.store(output, "FinanceTool Settings");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -5,15 +5,14 @@ import org.jdesktop.swingx.JXDatePicker;
 
 import javax.swing.*;
 import java.awt.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ResourceBundle;
 
 class DetailsDialog {
+
+    private static final int FIELD_WIDTH = 20;
 
     private static JXDatePicker datePicker;
     private static JTextField amountField;
@@ -25,7 +24,7 @@ class DetailsDialog {
     static void show(TableView tableView, JTable table, Object[] rowData, ResourceBundle messages) {
         id = rowData[0].toString();
         infoFrame = createInfoFrame(table, messages);
-        JPanel panel = createPanel(tableView, table, rowData, messages, infoFrame);
+        JPanel panel = createPanel(tableView, rowData, messages);
         infoFrame.add(panel);
         infoFrame.setVisible(true);
     }
@@ -33,15 +32,14 @@ class DetailsDialog {
     private static JFrame createInfoFrame(JTable table, ResourceBundle messages) {
         JFrame infoFrame = new JFrame(messages.getString("details.title"));
         infoFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        infoFrame.setLayout(new BorderLayout());
-        infoFrame.setLocationRelativeTo(table);
         infoFrame.setSize(400, 300);
         infoFrame.setUndecorated(true);
         infoFrame.getRootPane().setWindowDecorationStyle(JRootPane.INFORMATION_DIALOG);
+        infoFrame.setLocationRelativeTo(table);
         return infoFrame;
     }
 
-    private static JPanel createPanel(TableView tableView, JTable table, Object[] rowData, ResourceBundle messages, JFrame infoFrame) {
+    private static JPanel createPanel(TableView tableView, Object[] rowData, ResourceBundle messages) {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -49,10 +47,10 @@ class DetailsDialog {
         gbc.insets = new Insets(5, 5, 5, 5);
         gbc.anchor = GridBagConstraints.WEST;
 
-        addDateComponents(panel, gbc, messages, rowData);
-        addAmountComponents(panel, gbc, messages, rowData);
-        addCategoryComponents(panel, gbc, messages, rowData);
-        addDescriptionComponents(panel, gbc, messages, rowData);
+        addDateComponents(panel, gbc, rowData, messages);
+        addAmountComponents(panel, gbc, rowData, messages);
+        addCategoryComponents(panel, gbc, rowData, messages);
+        addDescriptionComponents(panel, gbc, rowData, messages);
 
         JButton saveButton = new JButton(messages.getString("details.save"));
         saveButton.addActionListener(e -> saveData(tableView));
@@ -88,42 +86,49 @@ class DetailsDialog {
         infoFrame.dispose();
     }
 
-    private static void addDateComponents(JPanel panel, GridBagConstraints gbc, ResourceBundle messages, Object[] rowData) {
+    private static void addDateComponents(JPanel panel, GridBagConstraints gbc, Object[] rowData, ResourceBundle messages) {
         JLabel dateLabel = new JLabel(messages.getString("details.date") + ":");
         datePicker = new JXDatePicker();
-        Date date;
-        try {
-            date = new SimpleDateFormat("yyyy-MM-dd").parse(rowData[1].toString());
-        } catch (ParseException e) {
-            date = new Date();
-        }
+        Date date = rowData.length > 1 ? parseDate(rowData[1].toString()) : new Date();
         datePicker.setDate(date);
 
         addComponent(panel, dateLabel, datePicker, gbc);
     }
 
-    private static void addAmountComponents(JPanel panel, GridBagConstraints gbc, ResourceBundle messages, Object[] rowData) {
+    private static Date parseDate(String dateString) {
+        try {
+            return new SimpleDateFormat("yyyy-MM-dd").parse(dateString);
+        } catch (ParseException e) {
+            return new Date();
+        }
+    }
+
+    private static void addAmountComponents(JPanel panel, GridBagConstraints gbc, Object[] rowData, ResourceBundle messages) {
         JLabel amountLabel = new JLabel(messages.getString("details.amount") + ":");
-        amountField = new JTextField(rowData[2].toString(), 20);
+        amountField = new JTextField(getFieldText(rowData, 2), FIELD_WIDTH);
         amountField.setEditable(true);
 
         addComponent(panel, amountLabel, amountField, gbc);
     }
 
-    private static void addCategoryComponents(JPanel panel, GridBagConstraints gbc, ResourceBundle messages, Object[] rowData) {
+    private static void addCategoryComponents(JPanel panel, GridBagConstraints gbc, Object[] rowData, ResourceBundle messages) {
         JLabel categoryLabel = new JLabel(messages.getString("details.category") + ":");
-        categoryField = new JTextField(rowData[3].toString(), 20);
+        categoryField = new JTextField(getFieldText(rowData, 3), FIELD_WIDTH);
         categoryField.setEditable(true);
 
         addComponent(panel, categoryLabel, categoryField, gbc);
     }
 
-    private static void addDescriptionComponents(JPanel panel, GridBagConstraints gbc, ResourceBundle messages, Object[] rowData) {
+    private static void addDescriptionComponents(JPanel panel, GridBagConstraints gbc, Object[] rowData, ResourceBundle messages) {
         JLabel descriptionLabel = new JLabel(messages.getString("details.description") + ":");
-        descriptionField = new JTextField(rowData[4].toString(), 20);
+        descriptionField = new JTextField(getFieldText(rowData, 4), FIELD_WIDTH);
         descriptionField.setEditable(true);
 
         addComponent(panel, descriptionLabel, descriptionField, gbc);
+    }
+
+    private static String getFieldText(Object[] rowData, int index) {
+        return rowData.length > index ? rowData[index].toString() : "";
     }
 
     private static void addComponent(JPanel panel, JLabel label, Component field, GridBagConstraints gbc) {
