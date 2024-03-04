@@ -1,7 +1,10 @@
-package de.drachenpapa.views;
+package de.drachenpapa.views.components;
 
 import de.drachenpapa.Messages;
 import de.drachenpapa.Settings;
+import de.drachenpapa.views.dialogs.SettingsDialog;
+import de.drachenpapa.views.TableView;
+import de.drachenpapa.views.dialogs.AboutDialog;
 
 import javax.swing.*;
 import java.awt.*;

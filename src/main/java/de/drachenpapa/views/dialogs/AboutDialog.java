@@ -1,4 +1,4 @@
-package de.drachenpapa.views;
+package de.drachenpapa.views.dialogs;
 
 import de.drachenpapa.Messages;
 

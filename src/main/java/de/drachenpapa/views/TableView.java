@@ -3,15 +3,16 @@ package de.drachenpapa.views;
 import de.drachenpapa.Messages;
 import de.drachenpapa.Settings;
 import de.drachenpapa.database.DatabaseConnector;
+import de.drachenpapa.views.components.MenuBar;
 import lombok.Getter;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.*;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 public class TableView extends JFrame {
@@ -24,7 +25,7 @@ public class TableView extends JFrame {
     public TableView() {
         settings = new Settings();
         messages = Messages.getMessages(settings.getLocale());
-        MenuBar menuBar = new MenuBar(this);
+        de.drachenpapa.views.components.MenuBar menuBar = new MenuBar(this);
 
         setTitle(messages.getString("app.title"));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -33,10 +34,10 @@ public class TableView extends JFrame {
         setJMenuBar(menuBar.create());
 
         table = new JTable();
-        table.setDefaultRenderer(Object.class, new CustomCellRenderer());
-        table.setDefaultEditor(Object.class, null);
+        makeTableUneditableAndColorized();
+
         JScrollPane scrollPane = new JScrollPane(table);
-        JToolBar toolBar = Toolbar.create(table);
+        JToolBar toolBar = Toolbar.create(table, messages, TableView.this);
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(toolBar, BorderLayout.PAGE_START);
         getContentPane().add(scrollPane, BorderLayout.CENTER);
@@ -53,69 +54,56 @@ public class TableView extends JFrame {
                         for (int col = 0; col < table.getColumnCount(); col++) {
                             rowData[col] = table.getValueAt(row, col);
                         }
-                        RowInfo.show(table, rowData, messages);
+                        DetailsDialog.show(TableView.this, table, rowData, messages);
                     }
                 }
             }
         });
     }
 
-    private void loadTableData() {
-        try (Connection connection = DatabaseConnector.getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT date, amount, category, description FROM finances");
-             ResultSet resultSet = statement.executeQuery()) {
+    private void makeTableUneditableAndColorized() {
+        // Date and Number seem to not work when just using Object.class
+        table.setDefaultEditor(Object.class, null);
+        table.setDefaultEditor(Date.class, null);
+        table.setDefaultEditor(Number.class, null);
 
+        table.setDefaultRenderer(Object.class, new CustomTableCellRenderer(messages));
+        table.setDefaultRenderer(Date.class, new CustomTableCellRenderer(messages));
+        table.setDefaultRenderer(Number.class, new CustomTableCellRenderer(messages));
+    }
+
+    void loadTableData() {
+        try (Connection connection = DatabaseConnector.getConnection();
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM finances");
+             ResultSet resultSet = statement.executeQuery()) {
             DefaultTableModel model = new DefaultTableModel() {
                 @Override
                 public Class<?> getColumnClass(int columnIndex) {
                     return getValueAt(0, columnIndex).getClass();
                 }
             };
-            ResultSetMetaData metaData = resultSet.getMetaData();
 
+            ResultSetMetaData metaData = resultSet.getMetaData();
             int columnCount = metaData.getColumnCount();
+
             for (int i = 1; i <= columnCount; i++) {
                 String columnName = metaData.getColumnName(i).toLowerCase();
-                if (!columnName.equals("index")) {
-                    String translatedTitle = messages.getString("table.column." + columnName);
-                    model.addColumn(translatedTitle);
-                }
+                String translatedTitle = messages.getString("table.column." + columnName);
+                model.addColumn(translatedTitle);
             }
 
+
             while (resultSet.next()) {
-                Object[] rowData = new Object[columnCount - 1];
+                Object[] rowData = new Object[columnCount];
                 for (int i = 1; i <= columnCount; i++) {
-                    if (!metaData.getColumnName(i).equalsIgnoreCase("index")) {
-                        rowData[i - 1] = resultSet.getObject(i);
-                    }
+                    rowData[i - 1] = resultSet.getObject(i);
                 }
                 model.addRow(rowData);
             }
 
-            model.addRow(new Object[]{"2024-03-01", 100.0, "Income", "Salary"});
-            model.addRow(new Object[]{"2024-03-02", 50.0, "Income", "Bonus"});
-            model.addRow(new Object[]{"2024-03-03", -20.0, "Expense", "Groceries"});
-
             table.setModel(model);
-
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(this, "Error loading table data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private static class CustomCellRenderer extends DefaultTableCellRenderer {
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-
-            double amount = Double.parseDouble(table.getValueAt(row, 1).toString());
-            if (amount < 0) {
-                component.setBackground(Color.RED);
-            } else {
-                component.setBackground(Color.GREEN);
-            }
-
-            return component;
         }
     }
 
