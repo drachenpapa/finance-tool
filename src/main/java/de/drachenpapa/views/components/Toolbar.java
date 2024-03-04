@@ -1,6 +1,8 @@
-package de.drachenpapa.views;
+package de.drachenpapa.views.components;
 
 import de.drachenpapa.database.DatabaseConnector;
+import de.drachenpapa.views.TableView;
+import de.drachenpapa.views.dialogs.DetailsDialog;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;

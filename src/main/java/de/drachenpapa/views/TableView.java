@@ -4,6 +4,8 @@ import de.drachenpapa.Messages;
 import de.drachenpapa.Settings;
 import de.drachenpapa.database.DatabaseConnector;
 import de.drachenpapa.views.components.MenuBar;
+import de.drachenpapa.views.components.Toolbar;
+import de.drachenpapa.views.dialogs.DetailsDialog;
 import lombok.Getter;
 
 import javax.swing.*;
@@ -72,7 +74,7 @@ public class TableView extends JFrame {
         table.setDefaultRenderer(Number.class, new CustomTableCellRenderer(messages));
     }
 
-    void loadTableData() {
+    public void loadTableData() {
         try (Connection connection = DatabaseConnector.getConnection();
              PreparedStatement statement = connection.prepareStatement("SELECT * FROM finances");
              ResultSet resultSet = statement.executeQuery()) {

@@ -1,6 +1,7 @@
-package de.drachenpapa.views;
+package de.drachenpapa.views.dialogs;
 
 import de.drachenpapa.database.DatabaseConnector;
+import de.drachenpapa.views.TableView;
 import org.jdesktop.swingx.JXDatePicker;
 
 import javax.swing.*;
@@ -10,7 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ResourceBundle;
 
-class DetailsDialog {
+public class DetailsDialog {
 
     private static final int FIELD_WIDTH = 20;
 
@@ -21,7 +22,7 @@ class DetailsDialog {
     private static JFrame infoFrame;
     private static String id;
 
-    static void show(TableView tableView, JTable table, Object[] rowData, ResourceBundle messages) {
+    public static void show(TableView tableView, JTable table, Object[] rowData, ResourceBundle messages) {
         id = rowData[0].toString();
         infoFrame = createInfoFrame(table, messages);
         JPanel panel = createPanel(tableView, rowData, messages);
