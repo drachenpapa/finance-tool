@@ -53,7 +53,7 @@ public class TableView extends JFrame {
                         for (int col = 0; col < table.getColumnCount(); col++) {
                             rowData[col] = table.getValueAt(row, col);
                         }
-                        RowInfo.show(table, rowData);
+                        RowInfo.show(table, rowData, messages);
                     }
                 }
             }

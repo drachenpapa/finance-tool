@@ -24,6 +24,7 @@ public class MenuBar {
     public JMenuBar create() {
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(createFileMenu());
+        menuBar.add(createHelpMenu());
         return menuBar;
     }
 
@@ -33,6 +34,13 @@ public class MenuBar {
         fileMenu.add(getExitMenu());
 
         return fileMenu;
+    }
+
+    private JMenu createHelpMenu() {
+        JMenu helpMenu = new JMenu(messages.getString("help.menu"));
+        helpMenu.add(getAboutMenu());
+
+        return helpMenu;
     }
 
     private JMenuItem getSettingsMenu() {
@@ -46,21 +54,22 @@ public class MenuBar {
 
     private JMenuItem getExitMenu() {
         JMenuItem exitMenuItem = new JMenuItem(messages.getString("file.exit"));
-        setExitMenuItemAccelerator(exitMenuItem);
+        exitMenuItem.setMnemonic(KeyEvent.VK_Q);
+        exitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_DOWN_MASK));
         exitMenuItem.addActionListener(e -> {
-            saveSettingsAndExit();
+            Rectangle bounds = parentFrame.getBounds();
+            settings.saveSettings(bounds.x, bounds.y, bounds.width, bounds.height);
+            System.exit(0);
         });
         return exitMenuItem;
     }
 
-    private void setExitMenuItemAccelerator(JMenuItem exitMenuItem) {
-        exitMenuItem.setMnemonic(KeyEvent.VK_Q);
-        exitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_DOWN_MASK));
-    }
-
-    private void saveSettingsAndExit() {
-        Rectangle bounds = parentFrame.getBounds();
-        settings.saveSettings(bounds.x, bounds.y, bounds.width, bounds.height);
-        System.exit(0);
+    private JMenuItem getAboutMenu() {
+        JMenuItem aboutMenuItem = new JMenuItem(messages.getString("help.about"));
+        aboutMenuItem.addActionListener(e -> {
+            AboutDialog aboutDialog = new AboutDialog(parentFrame, settings.getLocale());
+            aboutDialog.setVisible(true);
+        });
+        return aboutMenuItem;
     }
 }
