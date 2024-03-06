@@ -1,6 +1,6 @@
 package de.drachenpapa;
 
-import de.drachenpapa.database.DatabaseConnector;
+import de.drachenpapa.database.H2Connector;
 import de.drachenpapa.views.TableView;
 
 import javax.swing.*;
@@ -8,7 +8,7 @@ import javax.swing.*;
 public class FinanceTool {
 
     public static void main(String[] args) {
-        DatabaseConnector.startUp();
+        H2Connector.startUp();
         launchApp();
     }
 

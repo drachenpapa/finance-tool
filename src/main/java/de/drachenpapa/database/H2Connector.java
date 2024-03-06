@@ -11,7 +11,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DatabaseConnector {
+public class H2Connector {
 
     private static final String JDBC_URL = "jdbc:h2:./data/finances";
     private static final String USERNAME = "admin";

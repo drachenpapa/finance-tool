@@ -1,6 +1,6 @@
 package de.drachenpapa.views;
 
-import de.drachenpapa.database.DatabaseConnector;
+import de.drachenpapa.database.H2Connector;
 import de.drachenpapa.database.records.Account;
 import de.drachenpapa.database.records.Category;
 import de.drachenpapa.database.records.FinancesEntry;
@@ -79,9 +79,9 @@ public class TableView extends JFrame {
     }
 
     public void loadTableData() {
-        List<FinancesEntry> finances = DatabaseConnector.getFinances();
-        List<Account> accounts = DatabaseConnector.getAccounts();
-        List<Category> categories = DatabaseConnector.getCategories();
+        List<FinancesEntry> finances = H2Connector.getFinances();
+        List<Account> accounts = H2Connector.getAccounts();
+        List<Category> categories = H2Connector.getCategories();
 
         DefaultTableModel model = new DefaultTableModel() {
             @Override

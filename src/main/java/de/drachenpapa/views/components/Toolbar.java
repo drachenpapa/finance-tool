@@ -1,6 +1,6 @@
 package de.drachenpapa.views.components;
 
-import de.drachenpapa.database.DatabaseConnector;
+import de.drachenpapa.database.H2Connector;
 import de.drachenpapa.views.TableView;
 import de.drachenpapa.views.dialogs.DetailsDialog;
 
@@ -37,7 +37,7 @@ public class Toolbar {
         int selectedRow = table.getSelectedRow();
         if (selectedRow != -1) {
             String id = model.getValueAt(selectedRow, 0).toString();
-            DatabaseConnector.removeFinancesEntry(id);
+            H2Connector.removeFinancesEntry(id);
             tableView.loadTableData();
         }
     }

@@ -1,6 +1,6 @@
 package de.drachenpapa.views.dialogs;
 
-import de.drachenpapa.database.DatabaseConnector;
+import de.drachenpapa.database.H2Connector;
 import de.drachenpapa.views.TableView;
 import org.jdesktop.swingx.JXDatePicker;
 
@@ -78,9 +78,9 @@ public class DetailsDialog {
         String description = descriptionField.getText();
 
         if (id.isEmpty()) {
-            DatabaseConnector.insertFinancesEntry(date, amount, category, description);
+            H2Connector.insertFinancesEntry(date, amount, category, description);
         } else {
-            DatabaseConnector.updateFinancesEntry(id, date, amount, category, description);
+            H2Connector.updateFinancesEntry(id, date, amount, category, description);
         }
 
         tableView.loadTableData();
