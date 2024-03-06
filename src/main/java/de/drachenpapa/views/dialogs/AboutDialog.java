@@ -1,6 +1,6 @@
 package de.drachenpapa.views.dialogs;
 
-import de.drachenpapa.Messages;
+import de.drachenpapa.utils.Messages;
 
 import javax.swing.*;
 import java.awt.*;

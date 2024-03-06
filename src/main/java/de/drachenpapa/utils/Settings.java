@@ -1,4 +1,4 @@
-package de.drachenpapa;
+package de.drachenpapa.utils;
 
 import java.io.*;
 import java.util.Locale;

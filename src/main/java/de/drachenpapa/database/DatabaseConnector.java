@@ -1,5 +1,12 @@
 package de.drachenpapa.database;
 
+import de.drachenpapa.database.converter.AccountConverter;
+import de.drachenpapa.database.converter.CategoryConverter;
+import de.drachenpapa.database.converter.FinancesConverter;
+import de.drachenpapa.database.records.Account;
+import de.drachenpapa.database.records.Category;
+import de.drachenpapa.database.records.FinancesEntry;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +52,7 @@ public class DatabaseConnector {
                 "id INT AUTO_INCREMENT PRIMARY KEY, " +
                 "name VARCHAR(255) NOT NULL, " +
                 "category VARCHAR(255) NOT NULL, " +
-                "type BOOLEAN NOT NULL)";
+                "income BOOLEAN NOT NULL)";
         executeUpdate(sql);
     }
 
@@ -98,7 +105,7 @@ public class DatabaseConnector {
         };
 
         for (String data : categoriesData) {
-            String sql = "INSERT INTO categories (name, category, type) VALUES " + data;
+            String sql = "INSERT INTO categories (name, category, income) VALUES " + data;
             executeUpdate(sql);
         }
 
@@ -115,11 +122,9 @@ public class DatabaseConnector {
     }
 
 
-   public static Connection startUp() throws SQLException {
-       Connection connection = getConnection();
+   public static void startUp() {
        createTables();
        preloadExampleData();
-       return connection;
    }
 
     public static List<FinancesEntry> getFinances() {
@@ -129,12 +134,42 @@ public class DatabaseConnector {
         try (Connection connection = getConnection();
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
-            financesEntries = FinancesConverter.convertResultSetToFinancesEntries(resultSet);
+            financesEntries = FinancesConverter.convert(resultSet);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
 
         return financesEntries;
+    }
+
+    public static List<Account> getAccounts() {
+        List<Account> accounts = new ArrayList<>();
+        String sql = "SELECT * FROM accounts";
+
+        try (Connection connection = getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+            accounts = AccountConverter.convert(resultSet);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return accounts;
+    }
+
+    public static List<Category> getCategories() {
+        List<Category> categories = new ArrayList<>();
+        String sql = "SELECT * FROM categories";
+
+        try (Connection connection = getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
+            categories = CategoryConverter.convert(resultSet);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return categories;
     }
 
     public static void insertFinancesEntry(String date, String amount, String category, String description) {

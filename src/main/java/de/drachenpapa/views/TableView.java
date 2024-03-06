@@ -1,11 +1,15 @@
 package de.drachenpapa.views;
 
-import de.drachenpapa.Messages;
-import de.drachenpapa.Settings;
 import de.drachenpapa.database.DatabaseConnector;
+import de.drachenpapa.database.records.Account;
+import de.drachenpapa.database.records.Category;
+import de.drachenpapa.database.records.FinancesEntry;
+import de.drachenpapa.utils.Messages;
+import de.drachenpapa.utils.Settings;
 import de.drachenpapa.views.components.MenuBar;
 import de.drachenpapa.views.components.Toolbar;
 import de.drachenpapa.views.dialogs.DetailsDialog;
+import de.drachenpapa.views.renderer.CustomTableCellRenderer;
 import lombok.Getter;
 
 import javax.swing.*;
@@ -13,8 +17,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.*;
 import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class TableView extends JFrame {
@@ -75,38 +79,29 @@ public class TableView extends JFrame {
     }
 
     public void loadTableData() {
-        try (Connection connection = DatabaseConnector.getConnection();
-             PreparedStatement statement = connection.prepareStatement("SELECT * FROM finances");
-             ResultSet resultSet = statement.executeQuery()) {
-            DefaultTableModel model = new DefaultTableModel() {
-                @Override
-                public Class<?> getColumnClass(int columnIndex) {
-                    return getValueAt(0, columnIndex).getClass();
-                }
-            };
+        List<FinancesEntry> finances = DatabaseConnector.getFinances();
+        List<Account> accounts = DatabaseConnector.getAccounts();
+        List<Category> categories = DatabaseConnector.getCategories();
 
-            ResultSetMetaData metaData = resultSet.getMetaData();
-            int columnCount = metaData.getColumnCount();
-
-            for (int i = 1; i <= columnCount; i++) {
-                String columnName = metaData.getColumnName(i).toLowerCase();
-                String translatedTitle = messages.getString("table.column." + columnName);
-                model.addColumn(translatedTitle);
+        DefaultTableModel model = new DefaultTableModel() {
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                return getValueAt(0, columnIndex).getClass();
             }
+        };
 
-
-            while (resultSet.next()) {
-                Object[] rowData = new Object[columnCount];
-                for (int i = 1; i <= columnCount; i++) {
-                    rowData[i - 1] = resultSet.getObject(i);
-                }
-                model.addRow(rowData);
-            }
-
-            table.setModel(model);
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error loading table data: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        // TODO
+        List<String> columns = List.of("ID", "Date", "Amount", "Description", "Account", "Category");
+        for (String column : columns) {
+            model.addColumn(column);
         }
+
+        for (FinancesEntry financesEntry : finances) {
+            Object[] rowData = new Object[] {financesEntry.id(), financesEntry.date(), financesEntry.amount(), financesEntry.description(), accounts.get(financesEntry.accountId()-1).name(), categories.get(financesEntry.categoryId()-1).name()};
+            model.addRow(rowData);
+        }
+
+        table.setModel(model);
     }
 
     public static void restart(JFrame currentFrame) {

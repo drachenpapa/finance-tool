@@ -1,15 +1,13 @@
 package de.drachenpapa.views.components;
 
-import de.drachenpapa.Messages;
-import de.drachenpapa.Settings;
+import de.drachenpapa.utils.Messages;
+import de.drachenpapa.utils.Settings;
 import de.drachenpapa.views.TableView;
 import de.drachenpapa.views.dialogs.AboutDialog;
 import de.drachenpapa.views.dialogs.SettingsDialog;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.util.ResourceBundle;
 
 public class MenuBar {

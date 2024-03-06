@@ -1,4 +1,6 @@
-package de.drachenpapa.database;
+package de.drachenpapa.database.converter;
+
+import de.drachenpapa.database.records.FinancesEntry;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -6,6 +8,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Converts a ResultSet to a list of {@link FinancesEntry}.
+ */
 public class FinancesConverter {
     private static final String ID = "id";
     private static final String DATE = "date";
@@ -14,7 +19,15 @@ public class FinancesConverter {
     private static final String ACCOUNT_ID = "account_id";
     private static final String CATEGORY_ID = "category_id";
 
-    public static List<FinancesEntry> convertResultSetToFinancesEntries(ResultSet resultSet) throws SQLException {
+
+    /**
+     * Converts a ResultSet to a list of {@link FinancesEntry}.
+     *
+     * @param resultSet The ResultSet containing finances data.
+     * @return A list of {@link FinancesEntry}.
+     * @throws SQLException If an SQL exception occurs.
+     */
+    public static List<FinancesEntry> convert(ResultSet resultSet) throws SQLException {
         List<FinancesEntry> financesEntries = new ArrayList<>();
         if (resultSet == null) {
             return financesEntries;
