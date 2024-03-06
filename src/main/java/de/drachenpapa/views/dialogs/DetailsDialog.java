@@ -78,9 +78,9 @@ public class DetailsDialog {
         String description = descriptionField.getText();
 
         if (id.isEmpty()) {
-            DatabaseConnector.insertEntry(date, amount, category, description);
+            DatabaseConnector.insertFinancesEntry(date, amount, category, description);
         } else {
-            DatabaseConnector.updateEntry(id, date, amount, category, description);
+            DatabaseConnector.updateFinancesEntry(id, date, amount, category, description);
         }
 
         tableView.loadTableData();
