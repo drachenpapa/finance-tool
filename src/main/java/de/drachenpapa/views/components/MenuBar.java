@@ -4,6 +4,8 @@ import de.drachenpapa.utils.Messages;
 import de.drachenpapa.utils.Settings;
 import de.drachenpapa.views.TableView;
 import de.drachenpapa.views.dialogs.AboutDialog;
+import de.drachenpapa.views.dialogs.AccountsDialog;
+import de.drachenpapa.views.dialogs.CategoriesDialog;
 import de.drachenpapa.views.dialogs.SettingsDialog;
 
 import javax.swing.*;
@@ -25,6 +27,7 @@ public class MenuBar {
     public JMenuBar create() {
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(createFileMenu());
+        menuBar.add(createEditMenu());
         menuBar.add(createHelpMenu());
         return menuBar;
     }
@@ -34,6 +37,19 @@ public class MenuBar {
         fileMenu.add(createMenuItem(messages.getString("file.settings"), this::showSettingsDialog));
         fileMenu.add(createMenuItem(messages.getString("file.exit"), this::exitApplication));
         return fileMenu;
+    }
+
+    private JMenu createEditMenu() {
+        JMenu helpMenu = new JMenu(messages.getString("edit.menu"));
+        helpMenu.add(createMenuItem(messages.getString("edit.accounts"), this::showAccountsDialog));
+        helpMenu.add(createMenuItem(messages.getString("edit.categories"), this::showCategoriesDialog));
+        return helpMenu;
+    }
+
+    private JMenu createHelpMenu() {
+        JMenu helpMenu = new JMenu(messages.getString("help.menu"));
+        helpMenu.add(createMenuItem(messages.getString("help.about"), this::showAboutDialog));
+        return helpMenu;
     }
 
     private JMenuItem createMenuItem(String label, Runnable action) {
@@ -48,19 +64,19 @@ public class MenuBar {
     }
 
     private void exitApplication() {
-        saveWindowSettings();
+        Rectangle bounds = parentFrame.getBounds();
+        settings.saveWindowSettings(bounds.x, bounds.y, bounds.width, bounds.height);
         System.exit(0);
     }
 
-    private void saveWindowSettings() {
-        Rectangle bounds = parentFrame.getBounds();
-        settings.saveWindowSettings(bounds.x, bounds.y, bounds.width, bounds.height);
+    private void showAccountsDialog() {
+        AccountsDialog accountsDialog = new AccountsDialog(parentFrame, settings.getLocale());
+        accountsDialog.setVisible(true);
     }
 
-    private JMenu createHelpMenu() {
-        JMenu helpMenu = new JMenu(messages.getString("help.menu"));
-        helpMenu.add(createMenuItem(messages.getString("help.about"), this::showAboutDialog));
-        return helpMenu;
+    private void showCategoriesDialog() {
+        CategoriesDialog categoriesDialog = new CategoriesDialog(parentFrame, settings.getLocale());
+        categoriesDialog.setVisible(true);
     }
 
     private void showAboutDialog() {
