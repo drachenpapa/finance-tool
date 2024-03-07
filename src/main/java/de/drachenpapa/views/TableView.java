@@ -17,7 +17,9 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Date;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -31,24 +33,34 @@ public class TableView extends JFrame {
     public TableView() {
         settings = new Settings();
         messages = Messages.getMessages(settings.getLocale());
-        de.drachenpapa.views.components.MenuBar menuBar = new MenuBar(this);
 
+        setupFrame();
+
+        table = new JTable();
+        configureTable();
+
+        addComponentsToFrame();
+
+        loadTableData();
+    }
+
+    private void setupFrame() {
         setTitle(messages.getString("app.title"));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(settings.getWidth(), settings.getHeight());
         setLocation(settings.getX(), settings.getY());
-        setJMenuBar(menuBar.create());
+        setJMenuBar(new MenuBar(this).create());
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent windowEvent) {
+                settings.saveWindowSettings(getX(), getY(), getWidth(), getHeight());
+            }
+        });
+    }
 
-        table = new JTable();
-        makeTableUneditableAndColorized();
-
-        JScrollPane scrollPane = new JScrollPane(table);
-        JToolBar toolBar = Toolbar.create(table, messages, TableView.this);
-        getContentPane().setLayout(new BorderLayout());
-        getContentPane().add(toolBar, BorderLayout.PAGE_START);
-        getContentPane().add(scrollPane, BorderLayout.CENTER);
-
-        loadTableData();
+    private void configureTable() {
+        table.setDefaultEditor(Object.class, null);
+        table.setDefaultRenderer(Object.class, new CustomTableCellRenderer(messages));
 
         table.addMouseListener(new MouseAdapter() {
             @Override
@@ -67,41 +79,44 @@ public class TableView extends JFrame {
         });
     }
 
-    private void makeTableUneditableAndColorized() {
-        // Date and Number seem to not work when just using Object.class
-        table.setDefaultEditor(Object.class, null);
-        table.setDefaultEditor(Date.class, null);
-        table.setDefaultEditor(Number.class, null);
-
-        table.setDefaultRenderer(Object.class, new CustomTableCellRenderer(messages));
-        table.setDefaultRenderer(Date.class, new CustomTableCellRenderer(messages));
-        table.setDefaultRenderer(Number.class, new CustomTableCellRenderer(messages));
+    private void addComponentsToFrame() {
+        JScrollPane scrollPane = new JScrollPane(table);
+        getContentPane().setLayout(new BorderLayout());
+        getContentPane().add(Toolbar.create(table, messages, this), BorderLayout.PAGE_START);
+        getContentPane().add(scrollPane, BorderLayout.CENTER);
     }
 
     public void loadTableData() {
-        List<FinancesEntry> finances = H2Connector.getFinances();
-        List<Account> accounts = H2Connector.getAccounts();
-        List<Category> categories = H2Connector.getCategories();
-
-        DefaultTableModel model = new DefaultTableModel() {
-            @Override
-            public Class<?> getColumnClass(int columnIndex) {
-                return getValueAt(0, columnIndex).getClass();
-            }
+        String[] columns = {
+                messages.getString("table.column.id"),
+                messages.getString("table.column.date"),
+                messages.getString("table.column.amount"),
+                messages.getString("table.column.description"),
+                messages.getString("table.column.account_id"),
+                messages.getString("table.column.category_id")
         };
 
-        // TODO
-        List<String> columns = List.of("ID", "Date", "Amount", "Description", "Account", "Category");
-        for (String column : columns) {
-            model.addColumn(column);
-        }
-
-        for (FinancesEntry financesEntry : finances) {
-            Object[] rowData = new Object[] {financesEntry.id(), financesEntry.date(), financesEntry.amount(), financesEntry.description(), accounts.get(financesEntry.accountId()-1).name(), categories.get(financesEntry.categoryId()-1).name()};
-            model.addRow(rowData);
-        }
-
+        List<Object[]> rowData = getRowData();
+        DefaultTableModel model = new DefaultTableModel(rowData.toArray(new Object[0][]), columns);
         table.setModel(model);
+    }
+
+    private List<Object[]> getRowData() {
+        List<Object[]> rowData = new ArrayList<>();
+        List<Account> accounts = H2Connector.getAccounts();
+        List<Category> categories = H2Connector.getCategories();
+        for (FinancesEntry financesEntry : H2Connector.getFinances()) {
+            Object[] rowDataEntry = {
+                    financesEntry.id(),
+                    financesEntry.date(),
+                    financesEntry.amount(),
+                    financesEntry.description(),
+                    accounts.get(financesEntry.accountId() - 1).name(),
+                    categories.get(financesEntry.categoryId() - 1).name()
+            };
+            rowData.add(rowDataEntry);
+        }
+        return rowData;
     }
 
     public static void restart(JFrame currentFrame) {

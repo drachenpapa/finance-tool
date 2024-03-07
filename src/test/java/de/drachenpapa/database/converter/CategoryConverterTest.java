@@ -56,7 +56,6 @@ public class CategoryConverterTest {
         List<Category> categories = CategoryConverter.convert(resultSet);
 
         // Then
-        assertThat("Category list should not be null", categories, isNotNull());
         assertThat("Category list should be empty", categories, hasSize(0));
     }
 }

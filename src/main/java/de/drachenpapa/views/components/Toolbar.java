@@ -13,12 +13,12 @@ public class Toolbar {
     public static JToolBar create(JTable table, ResourceBundle messages, TableView tableView) {
         JToolBar toolBar = new JToolBar();
         addButton(toolBar, table, messages, tableView);
-        addRemoveButton(toolBar, table, tableView);
+        addRemoveButton(toolBar, table, messages, tableView);
         return toolBar;
     }
 
     private static void addButton(JToolBar toolBar, JTable table, ResourceBundle messages, TableView tableView) {
-        JButton addButton = new JButton("Add Row");
+        JButton addButton = new JButton(messages.getString("toolbar.add"));
         addButton.addActionListener(e -> {
             Object[] emptyRowData = new Object[]{"", "", "", "", ""};
             DetailsDialog.show(tableView, table, emptyRowData, messages);
@@ -26,8 +26,8 @@ public class Toolbar {
         toolBar.add(addButton);
     }
 
-    private static void addRemoveButton(JToolBar toolBar, JTable table, TableView tableView) {
-        JButton removeButton = new JButton("Remove Row");
+    private static void addRemoveButton(JToolBar toolBar, JTable table, ResourceBundle messages, TableView tableView) {
+        JButton removeButton = new JButton(messages.getString("toolbar.remove"));
         removeButton.addActionListener(e -> removeRow(table, tableView));
         toolBar.add(removeButton);
     }

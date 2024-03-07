@@ -61,7 +61,6 @@ public class FinancesConverterTest {
         List<FinancesEntry> financesEntries = FinancesConverter.convert(resultSet);
 
         // Then
-        assertThat("Finances entry list should not be null", financesEntries, isNotNull());
         assertThat("Finances entry list should be empty", financesEntries, hasSize(0));
     }
 }

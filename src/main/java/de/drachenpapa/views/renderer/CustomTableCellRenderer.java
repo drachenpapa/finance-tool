@@ -16,7 +16,7 @@ public class CustomTableCellRenderer extends DefaultTableCellRenderer {
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
         super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-        String amountColumnName = "Amount"; // TODO messages.getString("table.column.amount");
+        String amountColumnName = messages.getString("table.column.amount");
         int amountColumnIndex = -1;
         for (int i = 0; i < table.getColumnCount(); i++) {
             if (table.getColumnName(i).equalsIgnoreCase(amountColumnName)) {
