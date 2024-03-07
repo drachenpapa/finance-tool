@@ -12,9 +12,11 @@ import java.util.List;
  */
 public class AccountConverter {
 
-    private static final String ID_COLUMN = "id";
-    private static final String NAME_COLUMN = "name";
-    private static final String IBAN_COLUMN = "iban";
+    private static final String ID = "id";
+    private static final String NAME = "name";
+    private static final String IBAN = "iban";
+    private static final String START_BUDGET = "startBudget";
+    private static final String BUDGET = "budget";
 
 
     /**
@@ -32,11 +34,13 @@ public class AccountConverter {
 
         try (resultSet) {
             while (resultSet.next()) {
-                int id = resultSet.getInt(ID_COLUMN);
-                String name = resultSet.getString(NAME_COLUMN);
-                String iban = resultSet.getString(IBAN_COLUMN);
+                int id = resultSet.getInt(ID);
+                String name = resultSet.getString(NAME);
+                String iban = resultSet.getString(IBAN);
+                double startBudget = resultSet.getDouble(START_BUDGET);
+                double budget = resultSet.getDouble(BUDGET);
 
-                Account account = new Account(id, name, iban);
+                Account account = new Account(id, name, iban, startBudget, budget);
                 accountList.add(account);
             }
         }

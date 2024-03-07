@@ -15,5 +15,13 @@ public record Account(
         /**
          * The IBAN (International Bank Account Number) associated with the account.
          */
-        String iban
+        String iban,
+        /**
+         * The initial budget of the account.
+         */
+        double startBudget,
+        /**
+         * The current budget of the account.
+         */
+        double budget
 ) {}

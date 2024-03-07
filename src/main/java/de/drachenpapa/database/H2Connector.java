@@ -43,7 +43,9 @@ public class H2Connector {
         String sql = "CREATE TABLE IF NOT EXISTS accounts (" +
                 "id INT AUTO_INCREMENT PRIMARY KEY, " +
                 "name VARCHAR(255) NOT NULL, " +
-                "iban VARCHAR(22) NOT NULL)";
+                "iban VARCHAR(22) NOT NULL), " +
+                "startBudget DECIMAL(10, 2) NOT NULL, " +
+                "budget DECIMAL(10, 2) NOT NULL";
         executeUpdate(sql);
     }
 
