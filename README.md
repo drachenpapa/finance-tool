@@ -13,7 +13,7 @@ The Financial Management System is a Java application designed to help manage fi
 git clone https://github.com/your_username/financial-management-system.git
 ```
 2. Open the project in your preferred Java IDE (e.g., IntelliJ IDEA, Eclipse).
-3. Build and run the `TableView.java` file to start the application.
+3. Build and run the `FinanceTool.java` file to start the application.
 
 ## Usage
 - Upon launching the application, you will see a table view displaying financial entries.
