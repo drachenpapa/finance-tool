@@ -1,5 +1,5 @@
-# Financial Management System
-The Financial Management System is a Java application designed to help manage financial records, including accounts, categories, and transactions.
+# Finance Tool
+The Finance Tool is a Java application designed to help manage financial records, including accounts, categories, and transactions.
 
 ## Features
 - Add, edit, and delete financial entries
@@ -10,7 +10,7 @@ The Financial Management System is a Java application designed to help manage fi
 ## Installation
 1. Clone the repository to your local machine:
 ```bash
-git clone https://github.com/your_username/financial-management-system.git
+git clone https://github.com/drachenpapa/finance-tool.git
 ```
 2. Open the project in your preferred Java IDE (e.g., IntelliJ IDEA, Eclipse).
 3. Build and run the `FinanceTool.java` file to start the application.
