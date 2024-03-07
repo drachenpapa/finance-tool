@@ -189,5 +189,33 @@ public class H2Connector {
         executeUpdate(sql, id);
     }
 
-    // TODO insert/update/remove account/category
+    public static void insertAccount(String name, String iban, double startBudget, double budget) {
+        String sql = "INSERT INTO accounts (name, iban, startBudget, budget) VALUES (?, ?, ?, ?)";
+        executeUpdate(sql, name, iban, startBudget, budget);
+    }
+
+    public static void updateAccount(String id, String name, String iban, double startBudget, double budget) {
+        String sql = "UPDATE accounts SET name = ?, iban = ?, startBudget = ?, budget = ? WHERE id = ?";
+        executeUpdate(sql, name, iban, startBudget, budget, id);
+    }
+
+    public static void removeAccount(String id) {
+        String sql = "DELETE FROM accounts WHERE id = ?";
+        executeUpdate(sql, id);
+    }
+
+    public static void insertCategory(String name, String category, String categoryType) {
+        String sql = "INSERT INTO transactions (name, category, categoryType) VALUES (?, ?, ?, ?)";
+        executeUpdate(sql, name, category, categoryType);
+    }
+
+    public static void updateCategory(String id, String name, String category, String categoryType) {
+        String sql = "UPDATE transactions SET name = ?, category = ?, categoryType = ? WHERE id = ?";
+        executeUpdate(sql, name, category, categoryType, id);
+    }
+
+    public static void removeCategory(String id) {
+        String sql = "DELETE FROM categories WHERE id = ?";
+        executeUpdate(sql, id);
+    }
 }
