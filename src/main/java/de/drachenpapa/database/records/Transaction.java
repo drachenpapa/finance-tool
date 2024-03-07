@@ -5,7 +5,7 @@ import java.time.LocalDate;
 /**
  * Represents a financial entry record in the database.
  */
-public record FinancesEntry(
+public record Transaction(
         /**
          * The unique identifier of the financial entry.
          */

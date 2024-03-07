@@ -1,6 +1,6 @@
 package de.drachenpapa.database.converter;
 
-import de.drachenpapa.database.records.FinancesEntry;
+import de.drachenpapa.database.records.Transaction;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,9 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Converts a ResultSet to a list of {@link FinancesEntry}.
+ * Converts a ResultSet to a list of {@link Transaction}.
  */
-public class FinancesConverter {
+public class TransactionConverter {
     private static final String ID = "id";
     private static final String DATE = "date";
     private static final String AMOUNT = "amount";
@@ -21,17 +21,18 @@ public class FinancesConverter {
 
 
     /**
-     * Converts a ResultSet to a list of {@link FinancesEntry}.
+     * Converts a ResultSet to a list of {@link Transaction}.
      *
-     * @param resultSet The ResultSet containing finances data.
-     * @return A list of {@link FinancesEntry}.
+     * @param resultSet The ResultSet containing transactions data.
+     * @return A list of {@link Transaction}.
      * @throws SQLException If an SQL exception occurs.
      */
-    public static List<FinancesEntry> convert(ResultSet resultSet) throws SQLException {
-        List<FinancesEntry> financesEntries = new ArrayList<>();
+    public static List<Transaction> convert(ResultSet resultSet) throws SQLException {
+        List<Transaction> transactions = new ArrayList<>();
         if (resultSet == null) {
-            return financesEntries;
+            return transactions;
         }
+
         try (resultSet) {
             while (resultSet.next()) {
                 int id = resultSet.getInt(ID);
@@ -41,10 +42,10 @@ public class FinancesConverter {
                 int accountId = resultSet.getInt(ACCOUNT_ID);
                 int categoryId = resultSet.getInt(CATEGORY_ID);
 
-                FinancesEntry financesEntry = new FinancesEntry(id, date, amount, description, accountId, categoryId);
-                financesEntries.add(financesEntry);
+                Transaction transaction = new Transaction(id, date, amount, description, accountId, categoryId);
+                transactions.add(transaction);
             }
         }
-        return financesEntries;
+        return transactions;
     }
 }

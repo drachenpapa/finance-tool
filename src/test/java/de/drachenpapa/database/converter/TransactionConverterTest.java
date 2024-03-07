@@ -1,6 +1,6 @@
 package de.drachenpapa.database.converter;
 
-import de.drachenpapa.database.records.FinancesEntry;
+import de.drachenpapa.database.records.Transaction;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -20,7 +20,7 @@ import static org.mockito.ArgumentMatchers.isNotNull;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-public class FinancesConverterTest {
+public class TransactionConverterTest {
 
     @Mock
     private ResultSet resultSet;
@@ -37,19 +37,19 @@ public class FinancesConverterTest {
         given(resultSet.getInt("category_id")).willReturn(1);
 
         // When
-        List<FinancesEntry> financesEntries = FinancesConverter.convert(resultSet);
+        List<Transaction> transactions = TransactionConverter.convert(resultSet);
 
         // Then
-        assertThat("Finances entry list should have one element", financesEntries, hasSize(1));
+        assertThat("Transactions list should have one element", transactions, hasSize(1));
 
-        FinancesEntry financesEntry = financesEntries.get(0);
-        assertAll("FinancesEntry was not properly converted",
-                () -> assertThat("Finances entry id should match", financesEntry.id(), is(1)),
-                () -> assertThat("Finances entry date should match", financesEntry.date(), is(LocalDate.of(2024, 3, 1))),
-                () -> assertThat("Finances entry amount should match", financesEntry.amount(), is(100.0)),
-                () -> assertThat("Finances entry description should match", financesEntry.description(), is("Salary")),
-                () -> assertThat("Finances entry account id should match", financesEntry.accountId(), is(1)),
-                () -> assertThat("Finances entry category id should match", financesEntry.categoryId(), is(1)));
+        Transaction transaction = transactions.get(0);
+        assertAll("Transaction was not properly converted",
+                () -> assertThat("ID should match", transaction.id(), is(1)),
+                () -> assertThat("Date should match", transaction.date(), is(LocalDate.of(2024, 3, 1))),
+                () -> assertThat("Amount should match", transaction.amount(), is(100.0)),
+                () -> assertThat("Description should match", transaction.description(), is("Salary")),
+                () -> assertThat("Account id should match", transaction.accountId(), is(1)),
+                () -> assertThat("Category id should match", transaction.categoryId(), is(1)));
     }
 
     @Test
@@ -58,9 +58,9 @@ public class FinancesConverterTest {
         given(resultSet.next()).willReturn(false);
 
         // When
-        List<FinancesEntry> financesEntries = FinancesConverter.convert(resultSet);
+        List<Transaction> transactions = TransactionConverter.convert(resultSet);
 
         // Then
-        assertThat("Finances entry list should be empty", financesEntries, hasSize(0));
+        assertThat("Transaction list should be empty", transactions, hasSize(0));
     }
 }

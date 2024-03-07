@@ -78,9 +78,9 @@ public class DetailsDialog {
         String description = descriptionField.getText();
 
         if (id.isEmpty()) {
-            H2Connector.insertFinancesEntry(date, amount, category, description);
+            H2Connector.insertTransaction(date, amount, category, description);
         } else {
-            H2Connector.updateFinancesEntry(id, date, amount, category, description);
+            H2Connector.updateTransaction(id, date, amount, category, description);
         }
 
         tableView.loadTableData();

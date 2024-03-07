@@ -3,7 +3,7 @@ package de.drachenpapa.views;
 import de.drachenpapa.database.H2Connector;
 import de.drachenpapa.database.records.Account;
 import de.drachenpapa.database.records.Category;
-import de.drachenpapa.database.records.FinancesEntry;
+import de.drachenpapa.database.records.Transaction;
 import de.drachenpapa.utils.Messages;
 import de.drachenpapa.utils.Settings;
 import de.drachenpapa.views.components.MenuBar;
@@ -105,14 +105,14 @@ public class TableView extends JFrame {
         List<Object[]> rowData = new ArrayList<>();
         List<Account> accounts = H2Connector.getAccounts();
         List<Category> categories = H2Connector.getCategories();
-        for (FinancesEntry financesEntry : H2Connector.getFinances()) {
+        for (Transaction transaction : H2Connector.getTransactions()) {
             Object[] rowDataEntry = {
-                    financesEntry.id(),
-                    financesEntry.date(),
-                    financesEntry.amount(),
-                    financesEntry.description(),
-                    accounts.get(financesEntry.accountId() - 1).name(),
-                    categories.get(financesEntry.categoryId() - 1).name()
+                    transaction.id(),
+                    transaction.date(),
+                    transaction.amount(),
+                    transaction.description(),
+                    accounts.get(transaction.accountId() - 1).name(),
+                    categories.get(transaction.categoryId() - 1).name()
             };
             rowData.add(rowDataEntry);
         }

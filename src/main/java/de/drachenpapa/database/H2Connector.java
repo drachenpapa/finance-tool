@@ -2,10 +2,10 @@ package de.drachenpapa.database;
 
 import de.drachenpapa.database.converter.AccountConverter;
 import de.drachenpapa.database.converter.CategoryConverter;
-import de.drachenpapa.database.converter.FinancesConverter;
+import de.drachenpapa.database.converter.TransactionConverter;
 import de.drachenpapa.database.records.Account;
 import de.drachenpapa.database.records.Category;
-import de.drachenpapa.database.records.FinancesEntry;
+import de.drachenpapa.database.records.Transaction;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ public class H2Connector {
     private static void createTables() {
         createAccountsTable();
         createCategoriesTable();
-        createFinancesTable();
+        createTransactionsTable();
     }
 
     private static void createAccountsTable() {
@@ -58,8 +58,8 @@ public class H2Connector {
         executeUpdate(sql);
     }
 
-    private static void createFinancesTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS finances (" +
+    private static void createTransactionsTable() {
+        String sql = "CREATE TABLE IF NOT EXISTS transactions (" +
                 "id INT AUTO_INCREMENT PRIMARY KEY, " +
                 "date DATE NOT NULL, " +
                 "amount DECIMAL(10, 2) NOT NULL, " +
@@ -86,7 +86,7 @@ public class H2Connector {
     }
 
     public static void preloadExampleData() {
-        if (isTableEmpty("finances")) {
+        if (isTableEmpty("transactions")) {
             insertExampleData();
         }
     }
@@ -111,14 +111,14 @@ public class H2Connector {
             executeUpdate(sql);
         }
 
-        String[] financesData = {
+        String[] transactionsData = {
                 "('2024-03-01', 100.0, 'Salary', 1, 1)",
                 "('2024-03-02', 50.0, 'Bonus', 1, 1)",
                 "('2024-03-03', -20.0, 'Groceries', 1, 2)"
         };
 
-        for (String data : financesData) {
-            String sql = "INSERT INTO finances (date, amount, description, account_id, category_id) VALUES " + data;
+        for (String data : transactionsData) {
+            String sql = "INSERT INTO transactions (date, amount, description, account_id, category_id) VALUES " + data;
             executeUpdate(sql);
         }
     }
@@ -129,19 +129,19 @@ public class H2Connector {
        preloadExampleData();
    }
 
-    public static List<FinancesEntry> getFinances() {
-        List<FinancesEntry> financesEntries = new ArrayList<>();
-        String sql = "SELECT * FROM finances";
+    public static List<Transaction> getTransactions() {
+        List<Transaction> transactions = new ArrayList<>();
+        String sql = "SELECT * FROM transactions";
 
         try (Connection connection = getConnection();
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
-            financesEntries = FinancesConverter.convert(resultSet);
+            transactions = TransactionConverter.convert(resultSet);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
 
-        return financesEntries;
+        return transactions;
     }
 
     public static List<Account> getAccounts() {
@@ -174,18 +174,20 @@ public class H2Connector {
         return categories;
     }
 
-    public static void insertFinancesEntry(String date, String amount, String category, String description) {
-        String sql = "INSERT INTO finances (date, amount, category, description) VALUES (?, ?, ?, ?)";
+    public static void insertTransaction(String date, String amount, String category, String description) {
+        String sql = "INSERT INTO transactions (date, amount, category, description) VALUES (?, ?, ?, ?)";
         executeUpdate(sql, date, amount, category, description);
     }
 
-    public static void updateFinancesEntry(String id, String date, String amount, String category, String description) {
-        String sql = "UPDATE finances SET date = ?, amount = ?, category = ?, description = ? WHERE id = ?";
+    public static void updateTransaction(String id, String date, String amount, String category, String description) {
+        String sql = "UPDATE transactions SET date = ?, amount = ?, category = ?, description = ? WHERE id = ?";
         executeUpdate(sql, date, amount, category, description, id);
     }
 
-    public static void removeFinancesEntry(String id) {
-        String sql = "DELETE FROM finances WHERE id = ?";
+    public static void removeTransaction(String id) {
+        String sql = "DELETE FROM transactions WHERE id = ?";
         executeUpdate(sql, id);
     }
+
+    // TODO insert/update/remove account/category
 }

@@ -37,7 +37,7 @@ public class Toolbar {
         int selectedRow = table.getSelectedRow();
         if (selectedRow != -1) {
             String id = model.getValueAt(selectedRow, 0).toString();
-            H2Connector.removeFinancesEntry(id);
+            H2Connector.removeTransaction(id);
             tableView.loadTableData();
         }
     }
