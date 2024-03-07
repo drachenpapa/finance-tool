@@ -43,9 +43,9 @@ public class H2Connector {
         String sql = "CREATE TABLE IF NOT EXISTS accounts (" +
                 "id INT AUTO_INCREMENT PRIMARY KEY, " +
                 "name VARCHAR(255) NOT NULL, " +
-                "iban VARCHAR(22) NOT NULL), " +
+                "iban VARCHAR(22) NOT NULL, " +
                 "startBudget DECIMAL(10, 2) NOT NULL, " +
-                "budget DECIMAL(10, 2) NOT NULL";
+                "budget DECIMAL(10, 2) NOT NULL)";
         executeUpdate(sql);
     }
 
@@ -93,11 +93,11 @@ public class H2Connector {
 
     private static void insertExampleData() {
         String[] accountsData = {
-                "('Main Account', 'DE12345678901234567890')"
+                "('Main Account', 'DE12345678901234567890', '0', '0')"
         };
 
         for (String data : accountsData) {
-            String sql = "INSERT INTO accounts (name, iban) VALUES " + data;
+            String sql = "INSERT INTO accounts (name, iban, startBudget, budget) VALUES " + data;
             executeUpdate(sql);
         }
 
