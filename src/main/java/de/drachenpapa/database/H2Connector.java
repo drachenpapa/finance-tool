@@ -1,9 +1,7 @@
 package de.drachenpapa.database;
 
-import de.drachenpapa.database.converter.AccountConverter;
 import de.drachenpapa.database.converter.CategoryConverter;
 import de.drachenpapa.database.converter.TransactionConverter;
-import de.drachenpapa.database.records.Account;
 import de.drachenpapa.database.records.Category;
 import de.drachenpapa.database.records.Transaction;
 
@@ -17,11 +15,11 @@ public class H2Connector {
     private static final String USERNAME = "admin";
     private static final String PASSWORD = "nimda";
 
-    public static Connection getConnection() throws SQLException {
+    static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
     }
 
-    private static void executeUpdate(String sql, Object... params) {
+    static void executeUpdate(String sql, Object... params) {
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             for (int i = 0; i < params.length; i++) {
@@ -34,41 +32,9 @@ public class H2Connector {
     }
 
     private static void createTables() {
-        createAccountsTable();
-        createCategoriesTable();
-        createTransactionsTable();
-    }
-
-    private static void createAccountsTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS accounts (" +
-                "id INT AUTO_INCREMENT PRIMARY KEY, " +
-                "name VARCHAR(255) NOT NULL, " +
-                "iban VARCHAR(22) NOT NULL, " +
-                "startBudget DECIMAL(10, 2) NOT NULL, " +
-                "budget DECIMAL(10, 2) NOT NULL)";
-        executeUpdate(sql);
-    }
-
-    private static void createCategoriesTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS categories (" +
-                "id INT AUTO_INCREMENT PRIMARY KEY, " +
-                "name VARCHAR(255) NOT NULL, " +
-                "category VARCHAR(255) NOT NULL, " +
-                "income BOOLEAN NOT NULL)";
-        executeUpdate(sql);
-    }
-
-    private static void createTransactionsTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS transactions (" +
-                "id INT AUTO_INCREMENT PRIMARY KEY, " +
-                "date DATE NOT NULL, " +
-                "amount DECIMAL(10, 2) NOT NULL, " +
-                "description VARCHAR(255) NOT NULL, " +
-                "account_id INT NOT NULL, " +
-                "category_id INT NOT NULL, " +
-                "FOREIGN KEY (account_id) REFERENCES accounts(id), " +
-                "FOREIGN KEY (category_id) REFERENCES categories(id))";
-        executeUpdate(sql);
+        AccountsDB.createTable();
+        CategoriesDB.createTable();
+        TransactionsDB.createTable();
     }
 
     private static boolean isTableEmpty(String tableName) {
@@ -128,94 +94,4 @@ public class H2Connector {
        createTables();
        preloadExampleData();
    }
-
-    public static List<Transaction> getTransactions() {
-        List<Transaction> transactions = new ArrayList<>();
-        String sql = "SELECT * FROM transactions";
-
-        try (Connection connection = getConnection();
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(sql)) {
-            transactions = TransactionConverter.convert(resultSet);
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-
-        return transactions;
-    }
-
-    public static List<Account> getAccounts() {
-        List<Account> accounts = new ArrayList<>();
-        String sql = "SELECT * FROM accounts";
-
-        try (Connection connection = getConnection();
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(sql)) {
-            accounts = AccountConverter.convert(resultSet);
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-
-        return accounts;
-    }
-
-    public static List<Category> getCategories() {
-        List<Category> categories = new ArrayList<>();
-        String sql = "SELECT * FROM categories";
-
-        try (Connection connection = getConnection();
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(sql)) {
-            categories = CategoryConverter.convert(resultSet);
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-
-        return categories;
-    }
-
-    public static void insertTransaction(String date, String amount, String category, String description) {
-        String sql = "INSERT INTO transactions (date, amount, category, description) VALUES (?, ?, ?, ?)";
-        executeUpdate(sql, date, amount, category, description);
-    }
-
-    public static void updateTransaction(String id, String date, String amount, String category, String description) {
-        String sql = "UPDATE transactions SET date = ?, amount = ?, category = ?, description = ? WHERE id = ?";
-        executeUpdate(sql, date, amount, category, description, id);
-    }
-
-    public static void removeTransaction(String id) {
-        String sql = "DELETE FROM transactions WHERE id = ?";
-        executeUpdate(sql, id);
-    }
-
-    public static void insertAccount(String name, String iban, double startBudget, double budget) {
-        String sql = "INSERT INTO accounts (name, iban, startBudget, budget) VALUES (?, ?, ?, ?)";
-        executeUpdate(sql, name, iban, startBudget, budget);
-    }
-
-    public static void updateAccount(String id, String name, String iban, double startBudget, double budget) {
-        String sql = "UPDATE accounts SET name = ?, iban = ?, startBudget = ?, budget = ? WHERE id = ?";
-        executeUpdate(sql, name, iban, startBudget, budget, id);
-    }
-
-    public static void removeAccount(String id) {
-        String sql = "DELETE FROM accounts WHERE id = ?";
-        executeUpdate(sql, id);
-    }
-
-    public static void insertCategory(String name, String category, String categoryType) {
-        String sql = "INSERT INTO transactions (name, category, categoryType) VALUES (?, ?, ?, ?)";
-        executeUpdate(sql, name, category, categoryType);
-    }
-
-    public static void updateCategory(String id, String name, String category, String categoryType) {
-        String sql = "UPDATE transactions SET name = ?, category = ?, categoryType = ? WHERE id = ?";
-        executeUpdate(sql, name, category, categoryType, id);
-    }
-
-    public static void removeCategory(String id) {
-        String sql = "DELETE FROM categories WHERE id = ?";
-        executeUpdate(sql, id);
-    }
 }

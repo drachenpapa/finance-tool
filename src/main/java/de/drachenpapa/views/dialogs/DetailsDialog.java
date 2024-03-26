@@ -1,10 +1,13 @@
 package de.drachenpapa.views.dialogs;
 
+import de.drachenpapa.database.AccountsDB;
 import de.drachenpapa.database.H2Connector;
+import de.drachenpapa.database.TransactionsDB;
 import de.drachenpapa.views.TableView;
 import org.jdesktop.swingx.JXDatePicker;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -59,9 +62,14 @@ public class DetailsDialog {
         JButton cancelButton = new JButton(messages.getString("details.cancel"));
         cancelButton.addActionListener(e -> infoFrame.dispose());
 
+        JButton removeButton = new JButton(messages.getString("details.remove"));
+        removeButton.addActionListener(e -> removeTransaction(tableView));
+
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.add(saveButton);
         buttonPanel.add(cancelButton);
+        buttonPanel.add(removeButton);
+
         gbc.gridx = 0;
         gbc.gridy++;
         gbc.gridwidth = 2;
@@ -77,11 +85,7 @@ public class DetailsDialog {
         String category = categoryField.getText();
         String description = descriptionField.getText();
 
-        if (id.isEmpty()) {
-            H2Connector.insertTransaction(date, amount, category, description);
-        } else {
-            H2Connector.updateTransaction(id, date, amount, category, description);
-        }
+        TransactionsDB.update(id, date, amount, category, description);
 
         tableView.loadTableData();
         infoFrame.dispose();
@@ -142,5 +146,11 @@ public class DetailsDialog {
     private static void resetGridBagConstraints(GridBagConstraints gbc) {
         gbc.gridx = 0;
         gbc.gridy++;
+    }
+
+    private static void removeTransaction(TableView tableView) {
+        TransactionsDB.remove(id);
+        infoFrame.dispose();
+        tableView.loadTableData();
     }
 }
