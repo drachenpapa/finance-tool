@@ -3,7 +3,6 @@
   "description": "Renovate config",
   "extends": [
     "config:recommended",
-    "schedule:nonOfficeHours",
     ":automergePatch",
     ":dependencyDashboard",
     ":label(dependencies)",
