@@ -7,7 +7,9 @@
     ":dependencyDashboard",
     ":label(dependencies)",
     ":reviewer(drachenpapa)",
-    ":semanticCommitsDisabled",
+    ":semanticCommits",
+    ":semanticCommitTypeAll(deps)",
+    ":semanticCommitScopeDisabled",
     ":timezone(Europe/Berlin)"
   ]
 }
