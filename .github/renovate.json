@@ -7,9 +7,10 @@
     ":dependencyDashboard",
     ":label(dependencies)",
     ":reviewer(drachenpapa)",
+    "schedule:nonOfficeHours",
     ":semanticCommits",
-    ":semanticCommitTypeAll(deps)",
-    ":semanticCommitScopeDisabled",
+    ":semanticCommitTypeAll(build)",
+    ":semanticCommitScope(deps)",
     ":timezone(Europe/Berlin)"
   ]
 }
