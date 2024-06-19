@@ -1,6 +1,5 @@
 package de.drachenpapa.views.components;
 
-import de.drachenpapa.database.H2Connector;
 import de.drachenpapa.database.TransactionsDB;
 import de.drachenpapa.views.TableView;
 import de.drachenpapa.views.dialogs.NewTransactionDialog;

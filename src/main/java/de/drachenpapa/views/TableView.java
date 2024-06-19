@@ -2,7 +2,6 @@ package de.drachenpapa.views;
 
 import de.drachenpapa.database.AccountsDB;
 import de.drachenpapa.database.CategoriesDB;
-import de.drachenpapa.database.H2Connector;
 import de.drachenpapa.database.TransactionsDB;
 import de.drachenpapa.database.records.Account;
 import de.drachenpapa.database.records.Category;

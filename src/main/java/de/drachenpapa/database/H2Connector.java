@@ -1,13 +1,6 @@
 package de.drachenpapa.database;
 
-import de.drachenpapa.database.converter.CategoryConverter;
-import de.drachenpapa.database.converter.TransactionConverter;
-import de.drachenpapa.database.records.Category;
-import de.drachenpapa.database.records.Transaction;
-
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class H2Connector {
 

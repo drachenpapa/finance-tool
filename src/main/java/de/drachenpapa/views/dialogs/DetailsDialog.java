@@ -1,13 +1,10 @@
 package de.drachenpapa.views.dialogs;
 
-import de.drachenpapa.database.AccountsDB;
-import de.drachenpapa.database.H2Connector;
 import de.drachenpapa.database.TransactionsDB;
 import de.drachenpapa.views.TableView;
 import org.jdesktop.swingx.JXDatePicker;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

@@ -1,6 +1,5 @@
 package de.drachenpapa.views.dialogs;
 
-import de.drachenpapa.database.H2Connector;
 import de.drachenpapa.database.TransactionsDB;
 import de.drachenpapa.views.TableView;
 import org.jdesktop.swingx.JXDatePicker;
